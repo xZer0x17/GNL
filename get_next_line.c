@@ -6,7 +6,7 @@
 /*   By: alflores <alflores@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 19:20:57 by alflores          #+#    #+#             */
-/*   Updated: 2023/01/26 17:05:37 by alflores         ###   ########.fr       */
+/*   Updated: 2023/01/26 20:26:40 by alflores         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,51 +127,61 @@ char	*ft_strdup(const char *src)
 	return (aux);
 }
 
-char	*ft_trash(int fd, char *str)//Aquí tengo que reservar la memoria del read
+char	*get_line(char *buf)
 {
-	char	*aux;
-	char	*sol;
 	int		i;
-	int		a;
+	int		len;
+	char	*aux;
 
-	i = 0;
-	aux = ft_calloc(sizeof(char), (BUFFER_SIZE + 1));
-	a = read(fd,aux,BUFFER_SIZE);
-	if (!str)
-		str = ft_strdup(aux);
-	while (a > 0)
-	{
-		while (aux[i])//Si quisiera poner [++i], tendría que asignar a i valor -1
-		{
-			if (aux[i] == '\n')
-			{
-				printf("1\n");
-				sol = ft_substr(aux, 0, i);
-				return sol;
-			}
-			i++;
-		}
-		a = read(fd,aux,BUFFER_SIZE);
-		ft_strjoin(aux, str);
+	i = -1;
+	len = ft_strlen(buf);
+	aux = (char *)malloc(sizeof(char) * len + 1);
+	if (!aux)
+		return(0);
+	while (buf[++i] != '\n'){
+		aux[i] = buf[i];
 	}
-	return aux;
+
+	return (aux);
 }
 
-char	*ft_line(char *str);//Aquí debo buscar los saltos de lineas
-//Función principal
 char	*get_next_line(int fd)
 {
-	static char	*trash;//Aquí es donde va lo que guarda el read pero no se printea
-/* 	char		*line;//La línea que voy a devolver */
-	return (ft_trash(fd, trash));
+	static char	*bbc;
+	char		*line;
+	char		*buf;
+	int			lineLen;
+
+	if (BUFFER_SIZE < 1 || fd < 0)
+		return (NULL);
+	buf = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
+	read(fd, buf, BUFFER_SIZE);
+	if (bbc == 0)
+	{
+		line = get_line(buf);
+		bbc = ft_substr(buf, ft_strlen(line) + 1, ft_strlen(buf));
+		printf("%s\n", bbc);
+		return(line);
+	}
+	line = get_line(buf);
+	if (!line)
+		return (0);
+	lineLen = ft_strlen(line);
+	line = ft_strjoin(bbc, line);
+	bbc = ft_substr(buf, lineLen, ft_strlen(buf));
+
+	return(line);	
 }
 
 int main()
 {
-	char * aux;
-	int	fd=open("prueba.txt", O_RDONLY);
+	char *aux;
+	int	fd=open("prueba2.txt", O_RDONLY);
 /* 	int a = read(fd,aux,BUFFER_SIZE);
 	printf("|%s|\n", aux); */
-	printf("%s\n",get_next_line(fd));
+	for (int i = 1; i <= 5; i++){
+		aux = get_next_line(fd);
+		printf("%s\n",aux);
+		free(aux);
+	}
 }
- 
