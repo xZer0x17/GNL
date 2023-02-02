@@ -6,7 +6,7 @@
 /*   By: alflores <alflores@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/29 18:44:54 by alflores          #+#    #+#             */
-/*   Updated: 2023/02/02 20:13:23 by alflores         ###   ########.fr       */
+/*   Updated: 2023/02/02 20:40:48 by alflores         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ char	*get_buffer(char *buffer, int fd)
 	free (aux);
 	return (buffer);
 }
+
 char	*get_line(char *buffer)
 {
 	char	*line;

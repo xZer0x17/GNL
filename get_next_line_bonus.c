@@ -6,33 +6,43 @@
 /*   By: alflores <alflores@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/02 17:06:03 by alflores          #+#    #+#             */
-/*   Updated: 2023/02/02 19:13:57 by alflores         ###   ########.fr       */
+/*   Updated: 2023/02/02 20:42:07 by alflores         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
-char	*get_buffer(char *buffer, int fd)//Esta funcion es la que va a tener todo lo leido, más lo de antes si esk sobra algo
+char	*get_buffer(char *buffer, int fd)
 {
 	char	*aux;
+	char	*aux_buffer;
 	int		i;
 	
 	if(!buffer)
-		buffer = ft_calloc(sizeof(char), 1);//No le pongo null, pork quiero que este vacio no que no exista
-	aux	 = ft_calloc(sizeof(char), BUFFER_SIZE + 1);
+		buffer = ft_calloc(sizeof(char), 1);
+	aux	 = (char *)ft_calloc(sizeof(char), BUFFER_SIZE + 1);
 	if(!aux)
 		return (NULL);
 	i = 1;
-	while (i != 0)//va a entrar una vez
+	while (!ft_strchr(aux, '\n') && i != 0)
 	{
+		aux_buffer = buffer;
 		i = read(fd, aux, BUFFER_SIZE);
+		if (i == -1)
+		{
+			free(aux);
+			free(buffer);
+			return (NULL);
+		}
+		free (buffer);
 		aux[i] = '\0';
-		buffer = ft_strjoin(buffer, aux);
+		buffer = ft_strjoin(aux_buffer, aux);
 	}
+	free (aux);
 	return (buffer);
 }
 
-char	*get_line(char *buffer)//Aquí saca la línea de la estatica
+char	*get_line(char *buffer)
 {
 	char	*line;
 	int		i;
@@ -41,12 +51,12 @@ char	*get_line(char *buffer)//Aquí saca la línea de la estatica
 	if (!buffer)
 		return (NULL);
 	while (buffer[i] != '\n' && buffer[i] != '\0')
-		i++;//Con esto tengo el tamaño de lo que voy a llenar
-	line = ft_calloc(sizeof(char), (i + 2));//+2 por si es un \n y como uso calloc todo son 0 asique me da igual
+		i++;
+	line = ft_calloc(sizeof(char), (i + 2));
 	if (!line)
 		return (NULL);
 	i = 0;
-	while (buffer[i] != '\0' && buffer[i] != '\n')//Con esto lo ire  sustituyendo
+	while (buffer[i] != '\0' && buffer[i] != '\n')
 	{
 		line[i] = buffer[i];
 		i++;
@@ -57,7 +67,7 @@ char	*get_line(char *buffer)//Aquí saca la línea de la estatica
 	return (line);
 }
 
-char	*get_clean_buffer(char *buffer)//Consigo lo que sobra de la función
+char	*get_clean_buffer(char *buffer)
 {
 	char	*extra;
 	int		l_line;
@@ -80,7 +90,7 @@ char	*get_clean_buffer(char *buffer)//Consigo lo que sobra de la función
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer[3072];
+	static char	*buffer[OPEN_MAX];
 	char		*line;
 	
 	if (fd < 0 || BUFFER_SIZE <= 0)
@@ -92,20 +102,3 @@ char	*get_next_line(int fd)
 	buffer[fd] = get_clean_buffer(buffer[fd]);
 	return (line);
 }
-
-/* int main()
-{
-	char	*aux;
-	char	*aux2;
-	int		fd= open("prueba1.txt", O_RDONLY);
-	int		fc= open("prueba.txt", O_RDONLY);
-	for(int i = 1; i <= 5; i++)
-	{
-		aux = get_next_line(fd);
-		aux2 = get_next_line(fc);
-		printf("%s\n",aux2);
-		printf("%s\n",aux);
-		free(aux);
-		free(aux2);
-	}
-} */
