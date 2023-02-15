@@ -6,11 +6,21 @@
 /*   By: alflores <alflores@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/29 15:59:47 by alflores          #+#    #+#             */
-/*   Updated: 2023/02/02 19:52:11 by alflores         ###   ########.fr       */
+/*   Updated: 2023/02/05 20:41:59 by alflores         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+size_t	ft_strlen(const char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] != '\0')
+		i++;
+	return (i);
+}
 
 void	ft_bzero(void *str, size_t n)
 {
@@ -27,16 +37,6 @@ void	ft_bzero(void *str, size_t n)
 	}
 }
 
-size_t	ft_strlen(const char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i] != '\0')
-		i++;
-	return (i);
-}
-
 void	*ft_calloc(size_t count, size_t size)
 {
 	void	*result;
@@ -48,6 +48,29 @@ void	*ft_calloc(size_t count, size_t size)
 		return (0);
 	ft_bzero(result, (count * size));
 	return (result);
+}
+
+char	*ft_strchr(const char *str, int c)
+{
+	int	i;
+	int	comp;
+
+	if (!str)
+		return (NULL);
+	comp = 0;
+	i = 0;
+	while (((char *)str)[i] != '\0' && comp == 0)
+	{
+		if (((char *)str)[i] == (char)c)
+		{
+			return ((char *)&str[i]);
+			comp = 1;
+		}
+		i++;
+	}
+	if (str[i] == (char)c)
+		return ((char *)&str[i]);
+	return (NULL);
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
@@ -75,26 +98,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	while (b--)
 		str[a++] = s2[i++];
 	str[a] = '\0';
+	free((void *)s1);
 	return (str);
-}
-
-char	*ft_strchr(const char *str, int c)
-{
-	int	i;
-	int	comp;
-
-	comp = 0;
-	i = 0;
-	while (((char *)str)[i] != '\0' && comp == 0)
-	{
-		if (((char *)str)[i] == (char)c)
-		{
-			return ((char *)&str[i]);
-			comp = 1;
-		}
-		i++;
-	}
-	if (str[i] == (char)c)
-		return ((char *)&str[i]);
-	return (NULL);
 }
