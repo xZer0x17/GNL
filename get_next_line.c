@@ -6,7 +6,7 @@
 /*   By: alflores <alflores@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/29 18:44:54 by alflores          #+#    #+#             */
-/*   Updated: 2023/02/15 20:59:49 by alflores         ###   ########.fr       */
+/*   Updated: 2023/02/15 21:33:14 by alflores         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,14 @@
 
 char	*get_buffer(char *buffer, int fd)
 {
-	char	aux[BUFFER_SIZE + 1];
+	char	*aux;
 	int		i;
 
 	if (buffer && ft_strchr (buffer, '\n'))
 		return (buffer);
+	aux = ft_calloc(sizeof(char), BUFFER_SIZE + 1);
+	if (!aux)
+		return (NULL);
 	i = 1;
 	while (i != 0)
 	{
