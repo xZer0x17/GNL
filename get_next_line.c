@@ -6,13 +6,11 @@
 /*   By: alflores <alflores@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/29 18:44:54 by alflores          #+#    #+#             */
-/*   Updated: 2023/02/15 21:33:14 by alflores         ###   ########.fr       */
+/*   Updated: 2023/02/20 20:59:54 by alflores         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <fcntl.h>
-#include <stdio.h>
 
 char	*get_buffer(char *buffer, int fd)
 {
@@ -31,6 +29,7 @@ char	*get_buffer(char *buffer, int fd)
 		if (i == -1)
 		{
 			free(buffer);
+			free(aux);
 			return (NULL);
 		}
 		aux[i] = '\0';
@@ -38,6 +37,7 @@ char	*get_buffer(char *buffer, int fd)
 		if (ft_strchr (buffer, '\n'))
 			break ;
 	}
+	free(aux);
 	return (buffer);
 }
 
@@ -109,18 +109,4 @@ char	*get_next_line(int fd)
 	line = get_line(buffer);
 	buffer = get_clean_buffer(buffer);
 	return (line);
-}
-
-int main (){
-	int		fd;
-	char	*chacho;
-	
-	fd = open("pruebas.txt", O_RDONLY);
-	chacho = get_next_line(fd);
-	while (chacho)
-	{
-		chacho = get_next_line(fd);
-		printf("%s\n", chacho);
-	}
-
 }

@@ -6,20 +6,22 @@
 /*   By: alflores <alflores@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/02 17:06:03 by alflores          #+#    #+#             */
-/*   Updated: 2023/02/15 19:16:50 by alflores         ###   ########.fr       */
+/*   Updated: 2023/02/21 17:21:45 by alflores         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
-#include <fcntl.h>
 
 char	*get_buffer(char *buffer, int fd)
 {
-	char	aux[BUFFER_SIZE + 1];
+	char	*aux;
 	int		i;
 
 	if (buffer && ft_strchr (buffer, '\n'))
 		return (buffer);
+	aux = ft_calloc(sizeof(char), BUFFER_SIZE + 1);
+	if (!aux)
+		return (NULL);
 	i = 1;
 	while (i != 0)
 	{
@@ -27,6 +29,7 @@ char	*get_buffer(char *buffer, int fd)
 		if (i == -1)
 		{
 			free(buffer);
+			free(aux);
 			return (NULL);
 		}
 		aux[i] = '\0';
@@ -34,6 +37,7 @@ char	*get_buffer(char *buffer, int fd)
 		if (ft_strchr (buffer, '\n'))
 			break ;
 	}
+	free(aux);
 	return (buffer);
 }
 
@@ -73,7 +77,7 @@ char	*get_clean_buffer(char *buffer)
 		l_line++;
 	if (!buffer[l_line])
 	{
-		free(buffer);
+		free (buffer);
 		return (NULL);
 	}
 	l_line++;
@@ -86,7 +90,7 @@ char	*get_clean_buffer(char *buffer)
 	while (buffer[l_line])
 		extra[l_extra++] = buffer[l_line++];
 	extra[l_extra] = '\0';
-	free(buffer);
+	free (buffer);
 	return (extra);
 }
 
@@ -95,7 +99,7 @@ char	*get_next_line(int fd)
 	static char	*buffer[OPEN_MAX];
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || fd > OPEN_MAX /* || BUFFER_SIZE >= 1048576 */)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd > OPEN_MAX)
 		return (NULL);
 	if (!buffer[fd])
 		buffer[fd] = ft_calloc(sizeof(char), 1);
@@ -105,21 +109,4 @@ char	*get_next_line(int fd)
 	line = get_line(buffer[fd]);
 	buffer[fd] = get_clean_buffer(buffer[fd]);
 	return (line);
-}
-
-int main (){
-	int		agallas;
-	int		coraje;
-	char	*chacho;
-	char	*bbc;
-	
-	agallas = open("pruebas.txt", O_RDONLY);
-	coraje = open("pruebas1.txt", O_RDONLY);
-	for	(int i = 0; i < 2; i++ )
-	{
-		chacho = get_next_line(agallas);
-		bbc = get_next_line(coraje);
-		printf("%s\n", chacho);
-	}
-	
 }
